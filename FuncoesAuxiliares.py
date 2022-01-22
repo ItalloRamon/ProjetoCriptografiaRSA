@@ -7,11 +7,13 @@ from math import sqrt
 import time
 import random
 
-def mdc(num1, num2): #Calcula o MDC entre num1 e num2
+#Calcula o MDC entre num1 e num2
+def mdc(num1, num2): 
     if (num1 > num2 and num1%num2 == 0): return num2
     else: return mdc(num2, num1%num2)
 
-def eh_primo(num): #Retorna True se num for primo e False se ele não for primo
+#Retorna True se num for primo e False se ele não for primo
+def eh_primo(num): 
     c = 1
     i = 0
     eh_primo = True
@@ -28,15 +30,18 @@ def eh_primo(num): #Retorna True se num for primo e False se ele não for primo
 
     return eh_primo
 
+#Transforma uma lista em uma string. Exemplo: s = ['C','A','R','R','O'], lista_String(s) = C A R R O
 def lista_String(s): #Transforma uma lista (s) em uma string
     str_teste = ' '
     return str_teste.join(s)
 
-def lista_String_var(s): #Transforma uma lista (s) em uma string
+#Transforma uma lista em uma string. Exemplo: s = ['C','A','R','R','O'], lista_String(s) = CARRO
+def lista_String_var(s):
     str_teste = ''
     return str_teste.join(s)
 
-def lista_int_str(lista_int): #Transforma uma lista de inteiros em uma lista de strings
+#Transforma uma lista de inteiros em uma lista de strings
+def lista_int_str(lista_int): 
     lista_str = []
     for int in lista_int:
         lista_str.append(str(int))
@@ -44,8 +49,7 @@ def lista_int_str(lista_int): #Transforma uma lista de inteiros em uma lista de 
 
 #Gerar número primo
 # Large Prime Generation for RSA
-import random
-
+## REFAZER ESSA FUNÇAO ##
 def gerar_primo(janela): 
     # Pre generated primes
     first_primes_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
@@ -111,7 +115,8 @@ def gerar_primo(janela):
             break
     janela.write_event_value("p_aleatorio_finalizada", num_primo)
 
-def inverso (a, mod, x): #Calcular o inverso de a mod m
+#Calcular o inverso de a mod m
+def inverso (a, mod, x): 
     if (mdc(a, mod) != 1):
         return mdc(a, mod)
     
@@ -120,13 +125,8 @@ def inverso (a, mod, x): #Calcular o inverso de a mod m
     
     return inverso (a, mod, x + 1)
 
-def encontrar_d (e, mod):
-    d = 1
-    while e * d % mod != 1:
-        d = d + 1
-    else:
-        return d
-
+## ARRUMAR ESSA DAQUI ##
+#Calculo o inverso modular de 2 números
 def inverso_modular_c(n1, n2):
     def mdc(a, b):
         quocientes = []
@@ -196,6 +196,7 @@ def inverso_modular_c(n1, n2):
             s -= n2
     return s
 
+#Exponenciação modular rápida
 def exp_modular(base, expoente, modulo):
     resultado = 1
     while (expoente > 0):

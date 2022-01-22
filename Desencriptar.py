@@ -1,14 +1,10 @@
 from FuncoesAuxiliares import *
-
+## ADICIONAR COMENTÀRIOS AQUI ##
 def desencriptar(p, q, e, msg_cript):
     msg_encriptada = open(msg_cript, 'r')
 
-    #p = int(input("Digite o número primo (p): "))
-    #q = int(input("Digite o número primo (q): "))
-    #e = int(input("Digite a chave pública (e): "))
     d= inverso_modular_c(e, (p-1) * (q-1))
     n = p*q
-    #d = inverso(e, (p-1) * (q-1), 0)
 
     msg_desencriptada = []
     for linha in msg_encriptada:

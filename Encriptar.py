@@ -2,12 +2,12 @@ from FuncoesAuxiliares import *
 
 def encriptar(n, e, msg1):
     
-    #msg = input("Digite a mensagem para ser criptografada: ").upper()
-    
     msg_precod = []
     caractere = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ']
     codigo = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
     msg=[]
+    
+    # Transforma toda as letras da mensagem em letras maiúsculas 
     for i in range(len(msg1)):
         for j in range(27):
             if (msg1[i] == caractere[j].lower() or msg1[i] == caractere[j]):
@@ -21,10 +21,7 @@ def encriptar(n, e, msg1):
             if (msg[i] == caractere[j]): 
                 msg_precod.append(codigo[j])
 
-    
-    #n = int(input("Digite a chave pública (n): "))
-    #e = int(input("Digite a chave pública (e): "))
-
+    # Transforma cada número da mensagem pré-codificada
     msg_cod = []
     for num in msg_precod:
         #c = pow(num, e, n)
