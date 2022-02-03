@@ -1,4 +1,5 @@
 from FuncoesAuxiliares import *
+import os
 
 #Função para desencriptar a mensagem
 def desencriptar(p, q, e, msg_cript):
@@ -30,5 +31,11 @@ def desencriptar(p, q, e, msg_cript):
     msg_desencript = lista_String_Nospace(msg_desencript)
 
     #Salva a mensagem desencriptada no arquivo msg_desencriptada na pasta Arquivos
-    msg_ok = open('ProjetoCriptografiaRSA/Arquivos/msg_desencriptada.txt', 'w')
-    msg_ok.write(msg_desencript)
+    try:
+        msg_ok = open('ProjetoCriptografiaRSA/Arquivos/msg_desencriptada.txt', 'w')
+        msg_ok.write(msg_desencript)
+    except:
+        if not os.path.exists('ProjetoCriptografiaRSA/Arquivos'):
+            os.makedirs('ProjetoCriptografiaRSA/Arquivos')
+        msg_ok = open('ProjetoCriptografiaRSA/Arquivos/msg_desencriptada.txt', 'w')
+        msg_ok.write(msg_desencript)

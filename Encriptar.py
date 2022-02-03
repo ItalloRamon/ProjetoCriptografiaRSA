@@ -1,5 +1,5 @@
 from FuncoesAuxiliares import *
-
+import os
 #Função para Encriptar a mensagem
 def encriptar(n, e, msg_usuario):
     
@@ -33,5 +33,11 @@ def encriptar(n, e, msg_usuario):
     msg_cod = lista_String_space(msg_cod)
 
     #Salva a mensagem encriptada no arquivo msg_encriptada dentro da pasta Arquivos
-    msg_encriptada = open('ProjetoCriptografiaRSA/Arquivos/msg_encriptada.txt', 'w')
-    msg_encriptada.write(msg_cod)
+    try:
+        msg_encriptada = open('ProjetoCriptografiaRSA/Arquivos/msg_encriptada.txt', 'w')
+        msg_encriptada.write(msg_cod)
+    except:
+        if not os.path.exists('ProjetoCriptografiaRSA/Arquivos'):
+            os.makedirs('ProjetoCriptografiaRSA/Arquivos')
+        msg_encriptada = open('ProjetoCriptografiaRSA/Arquivos/msg_encriptada.txt', 'w')
+        msg_encriptada.write(msg_cod)
