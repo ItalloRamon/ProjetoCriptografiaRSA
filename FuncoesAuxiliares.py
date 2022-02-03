@@ -6,6 +6,7 @@ from threading import Timer
 from math import sqrt
 import time
 import random
+import PySimpleGUI as sg
 
 #Calcula o MDC entre num1 e num2
 def mdc(num1, num2): 
@@ -31,12 +32,12 @@ def eh_primo(num):
     return eh_primo
 
 #Transforma uma lista em uma string. Exemplo: s = ['C','A','R','R','O'], lista_String(s) = C A R R O
-def lista_String(s): #Transforma uma lista (s) em uma string
+def lista_String_space(s): #Transforma uma lista (s) em uma string
     str_teste = ' '
     return str_teste.join(s)
 
 #Transforma uma lista em uma string. Exemplo: s = ['C','A','R','R','O'], lista_String(s) = CARRO
-def lista_String_var(s):
+def lista_String_Nospace(s):
     str_teste = ''
     return str_teste.join(s)
 
@@ -48,11 +49,8 @@ def lista_int_str(lista_int):
     return lista_str
 
 #Gerar número primo
-# Large Prime Generation for RSA
-## REFAZER ESSA FUNÇAO ##
 def gerar_primo(janela): 
-    # Pre generated primes
-    first_primes_list = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
+    primeiros_primos = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
                         31, 37, 41, 43, 47, 53, 59, 61, 67,
                         71, 73, 79, 83, 89, 97, 101, 103,
                         107, 109, 113, 127, 131, 137, 139,
@@ -62,70 +60,57 @@ def gerar_primo(janela):
                         263, 269, 271, 277, 281, 283, 293,
                         307, 311, 313, 317, 331, 337, 347, 349]
     
-    def nBitRandom(n):
+    #Gerar um número de n bits
+    def nbits(n):
         return random.randrange(2**(n-1)+1, 2**n - 1)
     
-    def getLowLevelPrime(n):
-        '''Generate a prime candidate divisible
-        by first primes'''
+    def primeiroprimo(n):
+        #Pegar um número que não seja dividio por algum da lista de primos
         while True:
-            # Obtain a random number
-            pc = nBitRandom(n)
+            #Gerar um número aleatório
+            pc = nbits(n)
     
-            # Test divisibility by pre-generated
-            # primes
-            for divisor in first_primes_list:
+            #Testar a divisibilidade por todos os números da lista primeiros_primos
+            for divisor in primeiros_primos:
                 if pc % divisor == 0 and divisor**2 <= pc:
                     break
             else: return pc
     
-    def isMillerRabinPassed(mrc):
-        '''Run 20 iterations of Rabin Miller Primality test'''
-        maxDivisionsByTwo = 0
+    def TesteMillerRabin(mrc):
+        divisoes_2 = 0
         ec = mrc-1
         while ec % 2 == 0:
             ec >>= 1
-            maxDivisionsByTwo += 1
-        assert(2**maxDivisionsByTwo * ec == mrc-1)
+            divisoes_2 += 1
+        assert(2**divisoes_2 * ec == mrc-1)
     
         def trialComposite(round_tester):
             if pow(round_tester, ec, mrc) == 1:
                 return False
-            for i in range(maxDivisionsByTwo):
+            for i in range(divisoes_2):
                 if pow(round_tester, 2**i * ec, mrc) == mrc-1:
                     return False
             return True
     
-        # Set number of trials here
-        numberOfRabinTrials = 100000
-        for i in range(numberOfRabinTrials):
+       #Define a quantidade de teste que será feita
+        numero_testes = 100000
+        for i in range(numero_testes):
             round_tester = random.randrange(2, mrc)
             if trialComposite(round_tester):
                 return False
         return True
     
-
     while True:
         n = 56
-        prime_candidate = getLowLevelPrime(n)
-        if not isMillerRabinPassed(prime_candidate):
+        provavel_primo = primeiroprimo(n)
+        if not TesteMillerRabin(provavel_primo):
             continue
         else:
-            num_primo = prime_candidate
+            num_primo = provavel_primo
             break
-    janela.write_event_value("p_aleatorio_finalizada", num_primo)
 
-#Calcular o inverso de a mod m
-def inverso (a, mod, x): 
-    if (mdc(a, mod) != 1):
-        return mdc(a, mod)
-    
-    if ((a * x) % mod == 1):
-        return x
-    
-    return inverso (a, mod, x + 1)
+    janela.write_event_value("primo_gerado", num_primo)
 
-## ARRUMAR ESSA DAQUI ##
 #Calculo o inverso modular de 2 números
 def inverso_modular_c(n1, n2):
     def mdc(a, b):
@@ -134,7 +119,6 @@ def inverso_modular_c(n1, n2):
             temp = b
             b = a
             a = temp
-        
         r = a % b
         quocientes.append(a//b)
         while (r != 0):
@@ -147,11 +131,8 @@ def inverso_modular_c(n1, n2):
     def euclides(a, b):
         if (a % b == 0):
             return b
-
         return euclides(b, a%b)
         
-    # n1 = int(input("Digite um número: "))
-    # n2 = int(input("Digite outro número: "))
     mdc = mdc(n1, n2)
     del mdc[-1]
     mdc = list(reversed(mdc))
@@ -179,21 +160,24 @@ def inverso_modular_c(n1, n2):
 
     if(v == 1):
         t *= -1
-    #print(f"Os coeficientes lineares são: {s} e {t}")
-    eucli = euclides(n1, n2)
+    
     if (n2 > n1):
-        #temp = n1
-        #n1 = n2
-        #n2 = temp
-        temps = s
+        temp = s
         s = t
-        t = s
-    #print(f"{eucli} = {s} * {n1} + {t} * {n2}")
-    while not (n1 < s < n2):
+        t = temp
+
+    cont = 0 
+    help_s = s
+    while not (n1 <= s and s <= n2):
         if s < n2:
             s += n2
+            cont+=1
         elif s > n2:
             s -= n2
+            cont+=1
+        if cont == 10:
+            s = help_s
+            break
     return s
 
 #Exponenciação modular rápida

@@ -8,8 +8,12 @@ from random import randint
 from Encriptar import *
 from Desencriptar import *
 
-
+#Cria toda a interface gráfica
 def interface_grafica():
+    # Tema
+    sg.theme("Dark")
+
+    #Tela que aparece o número p gerado aleatoriamente
     def tela_p_aleatorio(p_aleatorio):
         #Tema
         sg.theme("Dark")
@@ -29,10 +33,6 @@ def interface_grafica():
             if (evento == "Copiar"):
                 pyperclip.copy(p_aleatorio)
             
-    # Tema
-    sg.theme("Dark")
-
-    #Layout
     #Janela 1
     def criar_janela1():
         layout_janela1 = [
@@ -57,6 +57,7 @@ def interface_grafica():
         ]
         return sg.Window("Gerar Chave Pública", layout_janela_chaveoublica, finalize=True)
 
+    #Janela 3
     def criar_janela_encriptar():
         layout_janela_encriptar = [
             [sg.Text("Digite a chave pública (n):")],
@@ -69,6 +70,7 @@ def interface_grafica():
         ]
         return sg.Window("Encriptar Mensagem", layout_janela_encriptar, finalize=True)
 
+    #Janela 4
     def criar_janela_desencriptar():
         layout_janela_desencriptar = [
             [sg.Text("Digite o número primo (p): ")],
@@ -83,7 +85,8 @@ def interface_grafica():
             [sg.Button("Desencriptar", key="desencriptar"), sg.Button("Voltar")]
         ]
         return sg.Window("Desencriptar Mensagem", layout_janela_desencriptar, finalize=True)
-    #Janela
+        
+    #Janelas
     janela1, janela2, janela3, janela4 = criar_janela1(), None, None, None
 
     #Ler valores
@@ -93,26 +96,25 @@ def interface_grafica():
             janela.close()
             sys.exit()
         
-        if (evento == "gerar_chave_publica") and (janela == janela1):
+        elif (evento == "gerar_chave_publica") and (janela == janela1):
             janela1.hide()
             janela2 = criar_janela_chavepublica()
         
-        if (evento == "p_aleatorio") and (janela == janela2):
-            #p_aleatorio = threading.Thread(target=gerar_primo, args=(janela,), daemon=True)
-            #p_aleatorio.start()
-            gerar_primo(janela)
-        elif (evento == "p_aleatorio_finalizada"):
-            #p_aleatorio.join()
-            tela_p_aleatorio(valores["p_aleatorio_finalizada"])
+        elif (evento == "p_aleatorio") and (janela == janela2):
+            thread_p_aleatorio = threading.Thread(target=gerar_primo, args=(janela,), daemon=True)
+            thread_p_aleatorio.start()
+        elif (evento == "primo_gerado"):
+            thread_p_aleatorio.join()
+            tela_p_aleatorio(valores["primo_gerado"])
         
-        if (evento == "q_aleatorio") and (janela == janela2):
-            p_aleatorio = threading.Thread(target=gerar_primo, args=(janela,), daemon=True)
-            p_aleatorio.start()
-        elif (evento == "q_aleatorio_finalizada"):
-            p_aleatorio.join()
-            tela_p_aleatorio(valores["p_aleatorio_finalizada"])
+        elif (evento == "q_aleatorio") and (janela == janela2):
+            thread_q_aleatorio = threading.Thread(target=gerar_primo, args=(janela,), daemon=True)
+            thread_q_aleatorio.start()
+        elif (evento == "primo_gerado"):
+            thread_q_aleatorio.join()
+            tela_p_aleatorio(valores["primo_gerado"])
 
-        if (evento == "e_aleatorio"):
+        elif (evento == "e_aleatorio"):
             p = int(valores["p"])
             q = int(valores["q"])
             φ = (p - 1)*(q - 1)
@@ -122,41 +124,30 @@ def interface_grafica():
                     break
             tela_p_aleatorio(e)
 
-        if (evento == "gerar"):
-            # p = int(valores["p"])
-            # q = int(valores["q"])
-            # e = int(valores["e"])
-            # φ = (p - 1)*(q - 1)
-
-            # if not eh_primo(p):
-            #     sg.popup_no_border("O valor de p não é um número primo!")
-            # if not eh_primo(int(valores["q"])):
-            #     sg.popup_no_border("O valor de q não é um número primo!")
-            # if not (1 < e < φ) or not (mdc(e, φ) == 1):
-            #     sg.popup_no_border("O valor de e não cumpre os requisitos!")
-
-            # if (eh_primo(p) and eh_primo(q) and (1 < e < φ) and (mdc(e, φ) == 1)):
-            #     gerar_chavepublica(p, q, e)
-            #     sg.popup_no_border("Chave pública gerada com sucesso")
+        elif (evento == "gerar"):
+            p = int(valores["p"])
+            q = int(valores["q"])
+            e = int(valores["e"])
+            
             gerar_chavepublica(p, q, e)
             sg.popup_no_border("Chave pública gerada com sucesso")
         
-        if (evento == "encriptar_msg"):
+        elif (evento == "encriptar_msg"):
             janela.hide()
             janela3 = criar_janela_encriptar()
         
-        if(evento == "encriptar"):
+        elif(evento == "encriptar"):
             n = int(valores["n"])
             e = int(valores["e"])
             msg = valores["msg"]
             encriptar(n, e, msg)
             sg.popup_no_border("Mensagem Encriptada com sucesso!")
         
-        if (evento == "desencriptar_msg"):
+        elif (evento == "desencriptar_msg"):
             janela.hide()
             janela4 = criar_janela_desencriptar()
         
-        if (evento == "desencriptar"):
+        elif (evento == "desencriptar"):
             p = int(valores["p"])
             q = int(valores["q"])
             e = int(valores["e"])
@@ -164,12 +155,12 @@ def interface_grafica():
             desencriptar(p, q, e, msg_cript)
             sg.popup_no_border("Mensagem desencriptada com sucesso!")
 
-        if (evento == "Voltar" and janela == janela2):
+        elif (evento == "Voltar" and janela == janela2):
             janela1.UnHide()
             janela2.close()
-        if (evento == "Voltar" and janela == janela3):
+        elif (evento == "Voltar" and janela == janela3):
             janela1.UnHide()
             janela3.close()
-        if (evento == "Voltar" and janela == janela4):
+        elif (evento == "Voltar" and janela == janela4):
             janela1.UnHide()
             janela4.close()
